@@ -35,7 +35,7 @@ describe('Input fields', () => {
         cy.get('#username').should('have.attr', 'pattern', '[a-zA-Z0-9_]+')
     })
 
-    it.only('Email input should support correct pattern', () => {
+    it('Email input should support correct pattern', () => {
         // Check regex
         // input invalid email
         // check that email element has red border outline

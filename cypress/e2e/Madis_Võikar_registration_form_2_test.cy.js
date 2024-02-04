@@ -10,32 +10,58 @@ describe('Section 1: Functional tests', () => {
 
     it('User can use only same both first and validation passwords', ()=>{
         // Add test steps for filling in only mandatory fields
+        inputValidData('johnDoe')
         // Type confirmation password which is different from first password
         // Assert that submit button is not enabled
         // Assert that successful message is not visible
+        cy.get('#success_message').should('not.be.visible')
         // Assert that error message is visible
         // Change the test, so the passwords would match
         // Add assertion, that error message is not visible anymore
+        cy.get('#password_error_message').should('not.be.visible').should('contain', 'Passwords do not match!')
         // Add assertion, that submit button is now enabled
+        cy.get('.submit_button').should('not.be.disabled')
     })
     
     it('User can submit form with all fields added', ()=>{
         // Add test steps for filling in ALL fields
-        // Assert that submit button is enabled
+        inputValidData('johnDoe')
+        // Check first radio element
+        cy.get('[type="radio"]').first().check()
+        // Check first checkbox element
+        cy.get('[type="checkbox"]').first().check()
+        // Assert that submit button is enabled, user has to click somewhere outside the input field
+        cy.get('.submit_button').should('be.enabled');
+        cy.get('.submit_button').click()
         // Assert that after submitting the form system show successful message
+        cy.get('#success_message').should('be.visible')
     })
 
     it('User can submit form with valid data and only mandatory fields added', ()=>{
         // Add test steps for filling in ONLY mandatory fields
-        // Assert that submit button is enabled
-        // Assert that after submitting the form system shows successful message
-
-        // example, how to use function, which fills in all mandatory data
-        // in order to see the content of the function, scroll to the end of the file
         inputValidData('johnDoe')
+        // Assert that submit button is enabled, user has to click somewhere outside the input field
+        cy.get('.submit_button').should('be.enabled');
+        cy.get('.submit_button').click()
+        // Assert that after submitting the form system shows successful message
+        cy.get('#success_message').should('be.visible')
     })
 
     // Add at least 1 test for checking some mandatory field's absence
+    it('User cannot submit data when email is absent', () => {
+        // Add test steps for filling in ONLY mandatory fields
+        inputValidData('johnDoe')
+        // Email field can not be empty, user has to click somewhere outside the input field
+        cy.get('#email').scrollIntoView()
+        cy.get('#email').clear()
+        cy.get('h2').contains('Password').click()
+        // Assert that submit button is disabled
+        cy.get('.submit_button').should('be.disabled')
+        // Assert that successful message is not visible
+        cy.get('#success_message').should('not.be.visible')
+        // Assert that error message is visible
+        cy.get('#input_error_message').should('be.visible').should('contain', 'Mandatory input field is not valid or empty!')
+    })
 
 })
 
@@ -55,6 +81,11 @@ describe('Section 2: Visual tests', () => {
 
     it('My test for second picture', () => {
         // Create similar test for checking the second picture
+        cy.log('Will check logo source and size')
+        cy.get('img[data-cy="cypress_logo"]').click()
+        cy.get('img').should('have.attr', 'src').should('include', 'cerebrum_hub_logo')
+        cy.get('img[data-cy="cypress_logo"]').invoke('height').should('be.lessThan', 116)
+            .and('be.greaterThan', 50)
     });
 
     it('Check navigation part', () => {
@@ -77,6 +108,16 @@ describe('Section 2: Visual tests', () => {
     })
 
     // Create similar test for checking the second link 
+    it('Check navigation part', () => {
+        cy.get('nav').children().should('have.length', 2)
+        cy.get('nav').siblings('h1').should('have.text', 'Registration form number 2')
+        cy.get('nav').children().eq(1).should('be.visible')
+            .and('have.attr', 'href', 'registration_form_3.html')
+            .click()
+        cy.url().should('contain', '/registration_form_3.html')
+        cy.go('back')
+        cy.log('Back again in registration form 2')
+    })
 
     it('Check that radio button list is correct', () => {
         // Array of found elements with given selector has 4 elements in total
@@ -101,6 +142,22 @@ describe('Section 2: Visual tests', () => {
     })
 
     // Create test similar to previous one verifying check boxes
+    it('Check that checkbox button list is correct', () => {
+       
+        cy.get('input[type="checkbox"]').should('have.length', 3)
+
+        cy.get('input[type="checkbox"]').next().eq(0).should('have.text','I have a bike')
+        cy.get('input[type="checkbox"]').next().eq(1).should('have.text','I have a car')
+        cy.get('input[type="checkbox"]').next().eq(2).should('have.text','I have a boat')
+       
+        cy.get('input[type="checkbox"]').eq(0).should('not.be.checked')
+        cy.get('input[type="checkbox"]').eq(1).should('not.be.checked')
+        cy.get('input[type="checkbox"]').eq(2).should('not.be.checked')
+        
+        cy.get('input[type="checkbox"]').eq(0).check().should('be.checked')
+        cy.get('input[type="checkbox"]').eq(1).check().should('be.checked')
+        cy.get('input[type="checkbox"]').eq(0).uncheck()
+    })
 
     it('Car dropdown is correct', () => {
         // Here is just an example how to explicitely create screenshot from the code
@@ -124,7 +181,24 @@ describe('Section 2: Visual tests', () => {
     })
 
     // Create test similar to previous one
+    it('Favourite animal dropdown is correct', () => {
+       
+        cy.get('#animal').select(1).screenshot('Favourite animal drop-down')
+        cy.screenshot('Full page screenshot')
 
+        cy.get('#animal').children().should('have.length', 6)
+        
+        cy.get('#animal').find('option').eq(0).should('have.text', 'Dog')
+        //Checking the content of animal dropdown menu
+        cy.get('select#animal').should('be.visible')
+        .find('option').should('have.length', 6)
+        .each(($option, index, $list)  => {
+            const expectedOptions = ['dog', 'cat', 'snake', 'hippo', 'cow', 'horse']
+            const actualOptionText = $option.text().trim().toLowerCase()
+         
+            expect(actualOptionText).to.equal(expectedOptions[index])
+        })
+    })
 })
 
 function inputValidData(username) {

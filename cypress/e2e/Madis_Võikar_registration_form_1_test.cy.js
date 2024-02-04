@@ -16,12 +16,13 @@ Assignment 2:
  5. Add comment to the first test containing today’s date
  */
 
-describe('This is first test suite', () => {
+describe('This is first test suite, Madis Võikar', () => {
     it('User can submit data only when valid mandatory values are added', () => {
+        // 29.01.2024
+        cy.get('[data-testid="phoneNumberTestId"]').type('555666777')
+        cy.get('input[name="password"]').type('CerebrumT9')
+        cy.get('[name="confirm"]').type('CerebrumT9')
         cy.get('#username').type('Something')
-        cy.get('[data-testid="phoneNumberTestId"]').type('5656565656')
-        cy.get('input[name="password"]').type('Password123')
-        cy.get('[name="confirm"]').type('Password123')
 
         //in order to activate submit button, user has to click somewhere outside the input field
         cy.get('h2').contains('Password').click()
@@ -97,24 +98,51 @@ describe('This is first test suite', () => {
     */
 
     it('User cannot submit data when phone number is absent', () => {
-        // Add test, similar to previous one with phone number field not filled in
         // All other fields should be entered correctly
+        cy.get('#username').type('Madis')
+        cy.get('[data-testid="phoneNumberTestId"]').type('5646546')
+        cy.get("input[name='password']").type('Password123')
+        cy.get('[name="confirm"]').type('Password123')
+        // Add test, similar to previous one with phone number field not filled in
+        cy.get('[data-testid="phoneNumberTestId"]').scrollIntoView()
+        cy.get('[data-testid="phoneNumberTestId"]').clear()
+        cy.get('h2').contains('Password').click()
         // Assert that submit button is not enabled and that successful message is not visible
+        cy.get('.submit_button').should('be.disabled')
+        cy.get('#success_message').should('not.be.visible')
     })
 
     it('User cannot submit data when password and/or confirmation password is absent', () => {
-        // Add test, similar to previous one with password field not filled in
         // All other fields should be entered correctly
+        cy.get('#username').type('Madis')
+        cy.get('[data-testid="phoneNumberTestId"]').type('5646546')
+        cy.get("input[name='password']").type('Password123')
+        cy.get('[name="confirm"]').type('Password123')
+        // Add test, similar to previous one with password field not filled in
+        cy.get("input[name='password']").scrollIntoView()
+        cy.get("input[name='password']").clear()
+        cy.get('h2').contains('Password').click()
+        // Add test, similar to previous one with password confirmation field not filled in
+        cy.get('[name="confirm"]').scrollIntoView()
+        cy.get('[name="confirm"]').clear()
+        cy.get('h2').contains('Password').click()
         // Assert that submit button is not enabled and that successful message is not visible
+        cy.get('.submit_button').should('be.disabled')
+        cy.get('#success_message').should('not.be.visible')
     })
 
     it('User cannot add letters to phone number', () => {
         // Next verification is given as example
         // how we can check from html code, that phone number should contain only numbers
-        cy.get('[data-testid="phoneNumberTestId"]').should('have.attr', 'type', 'number')
-
-        // Add steps, when all fields are correctly filled in, except phone number
         // Try typing letters to phone number field
+        cy.get('[data-testid="phoneNumberTestId"]').should('have.attr', 'type', 'number')
+        cy.get('[data-testid="phoneNumberTestId"]').type('ghgfhfghfg')
+         // Add steps, when all fields are correctly filled in, except phone number
+        cy.get('input[name="password"]').type('CerebrumT9')
+        cy.get('[name="confirm"]').type('CerebrumT9')
+        cy.get('#username').type('Something')
         // Assert that submit button is not enabled and that successful message is not visible
+        cy.get('.submit_button').should('be.disabled')
+        cy.get('#success_message').should('not.be.visible')
     })
 })

@@ -2,7 +2,7 @@ beforeEach(() => {
     cy.visit('cypress/fixtures/registration_form_2.html')
 })
 
-//Assignement 4:
+//Assignment 4:
 describe('Section 1: Functional tests', () => {
     it('User can use only same both first and validation passwords', ()=>{
         cy.get('[data-testid="user"]').type('jaanvarvas')
@@ -52,7 +52,7 @@ describe('Section 1: Functional tests', () => {
 
 })
 
-//Assignement 5:
+//Assignment 5:
 describe('Section 2: Visual tests', () => {
     it('Check that logo is correct and has correct size', () => {
         cy.log('Will check logo source and size')

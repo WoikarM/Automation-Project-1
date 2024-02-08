@@ -2,7 +2,7 @@ beforeEach(() => {
     cy.visit('cypress/fixtures/registration_form_2.html')
 })
 
-// Assignement 6:
+// Assignment 6:
 describe('Input fields', () => {
     it('Username cannot be empty string', () => {
         cy.get('#username').type('John')

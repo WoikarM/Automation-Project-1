@@ -93,7 +93,6 @@ describe('Functional Tests', () => {
       });
     
       it('Should fill only mandatory fields and make corresponding assertions', () => {
-        cy.get("input[name='name']").type('Something')
         cy.get("input[name='email']").type('validemail@yeap.com')
         cy.get('#country').select('Estonia')
         cy.get('#city').select('Tallinn')
@@ -103,6 +102,7 @@ describe('Functional Tests', () => {
       });
     
       it('Should assert corresponding assertions when mandatory fields are absent', () => {
+        cy.get("input[name='name']").type('Something')
         cy.get('label').contains('Date of registration').next('input[type="date"]').click().type('2024-01-01')
         cy.get('input[type="radio"]').eq(0).check().should('be.checked')
         cy.get('label').contains('Birthday').next('input[type="date"]').click().type('1999-01-01')
